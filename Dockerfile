@@ -6,8 +6,10 @@ COPY Cargo.toml Cargo.lock ./
 COPY src ./src
 COPY migrations ./migrations
 COPY scripts ./scripts
+COPY .sqlx ./.sqlx
 
-RUN cargo install sqlx-cli --no-default-features --features postgres
+ENV SQLX_OFFLINE=true
+RUN cargo install sqlx-cli --version "0.8.2" --no-default-features --features postgres
 RUN cargo build --release
 
 FROM rust:1.93-slim
