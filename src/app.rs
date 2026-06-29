@@ -73,11 +73,17 @@ pub fn build_app(state: AppState) -> Router
         .route("/logout", post(logout))
         .layer(GovernorLayer::new(governor_conf));
 
+    let medicine_routes = Router::new()
+        .route("/", get(crate::routes::medicine::list_medicines).post(crate::routes::medicine::create_medicine))
+        .route("/{id}", get(crate::routes::medicine::get_medicine).put(crate::routes::medicine::update_medicine).delete(crate::routes::medicine::delete_medicine))
+        .route("/logs", get(crate::routes::medicine::get_today_logs).post(crate::routes::medicine::create_log));
+
     Router::new()
         .route("/health", get(health))
         .route("/users", get(list_users))
         .route("/users/{id}", get(get_user).put(update_user).delete(delete_user))
         .nest("/auth", auth_routes)
+        .nest("/medicines", medicine_routes)
         .with_state(state)
         .layer(cors)
 }
