@@ -78,12 +78,20 @@ pub fn build_app(state: AppState) -> Router
         .route("/{id}", get(crate::routes::medicine::get_medicine).put(crate::routes::medicine::update_medicine).delete(crate::routes::medicine::delete_medicine))
         .route("/logs", get(crate::routes::medicine::get_today_logs).post(crate::routes::medicine::create_log));
 
+    let device_routes = Router::new()
+        .route("/schedule", get(crate::routes::device::get_schedule))
+        .route("/events", post(crate::routes::device::report_event))
+        .route("/heartbeat", post(crate::routes::device::heartbeat))
+        .route("/logs", post(crate::routes::device::report_log))
+        .route("/bind", post(crate::routes::device::bind_device));
+
     Router::new()
         .route("/health", get(health))
         .route("/users", get(list_users))
         .route("/users/{id}", get(get_user).put(update_user).delete(delete_user))
         .nest("/auth", auth_routes)
         .nest("/medicines", medicine_routes)
+        .nest("/api/v1/devices", device_routes)
         .with_state(state)
         .layer(cors)
 }
