@@ -22,13 +22,54 @@ services:
       - postgres
     env_file:
       - .env.dev
-    ports:
-      - "7878:7878"
+    # Porta NÃO exposta ao host. Apenas acessível pela rede interna do Docker.
+    # O Nginx é o único ponto de entrada.
+    expose:
+      - "7878"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7878/health"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  nginx:
+    image: nginx:alpine
+    container_name: rust_server_nginx
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  # -----------------------------------------------
+  # Microsserviço: Gerador de Relatórios (Futuro)
+  # -----------------------------------------------
+  # reporting_api:
+  #   build: ./services/reporting
+  #   container_name: rust_server_reporting
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgres
+  #   env_file:
+  #     - .env.dev
+  #   expose:
+  #     - "3000"
+
+  # -----------------------------------------------
+  # Microsserviço: Worker de Notificações (Futuro)
+  # Não expõe portas. Apenas consome o banco e
+  # dispara requisições para APIs externas (OneSignal, SMTP).
+  # -----------------------------------------------
+  # notification_worker:
+  #   build: ./services/notification
+  #   container_name: rust_server_notifications
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgres
+  #   env_file:
+  #     - .env.dev
 
 volumes:
   postgres_data:
