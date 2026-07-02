@@ -10,10 +10,10 @@ git pull origin main
 
 # 2. Build da imagem Rust otimizada
 echo "🔨 Construindo container da API..."
-docker-compose -f docker-compose.prod.yml build api
+docker compose -f docker-compose.prod.yml build api
 
 # 3. Levantar a infraestrutura sem desligar os antigos antes do build
 echo "🔄 Trocando containers (Zero Downtime)..."
-docker-compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.prod.yml up -d
 
 echo "✅ Deploy concluído com sucesso!"
