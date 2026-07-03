@@ -3,6 +3,7 @@ pub struct Config
 {
     pub database_url: String,
     pub jwt_secret: String,
+    pub admin_secret_key: String,
     pub rust_log: String,
     pub app_env: String,
 }
@@ -18,6 +19,9 @@ impl Config
 
             jwt_secret: std::env::var("JWT_SECRET")
                 .expect("[ERROR] JWT_SECRET must be set"),
+
+            admin_secret_key: std::env::var("ADMIN_SECRET_KEY")
+                .expect("[ERROR] ADMIN_SECRET_KEY must be set"),
 
             rust_log: std::env::var("RUST_LOG")
                 .unwrap_or_else(|_| "info".to_string()),

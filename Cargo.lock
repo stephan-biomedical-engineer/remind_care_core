@@ -2094,6 +2094,7 @@ dependencies = [
  "hex",
  "http-body-util",
  "jsonwebtoken",
+ "rand 0.9.4",
  "reqwest",
  "serde",
  "serde_json",

@@ -85,6 +85,9 @@ pub fn build_app(state: AppState) -> Router
         .route("/logs", post(crate::routes::device::report_log))
         .route("/bind", post(crate::routes::device::bind_device));
 
+    let admin_routes = Router::new()
+        .route("/provision", post(crate::routes::admin::provision_device));
+
     Router::new()
         .route("/health", get(health))
         .route("/users", get(list_users))
@@ -92,6 +95,7 @@ pub fn build_app(state: AppState) -> Router
         .nest("/auth", auth_routes)
         .nest("/medicines", medicine_routes)
         .nest("/api/v1/devices", device_routes)
+        .nest("/api/v1/admin", admin_routes)
         .with_state(state)
         .layer(cors)
 }
