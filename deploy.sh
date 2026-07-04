@@ -17,3 +17,7 @@ echo "🔄 Trocando containers (Zero Downtime)..."
 docker compose -f docker-compose.prod.yml up -d
 
 echo "✅ Deploy concluído com sucesso!"
+
+docker restart rust_server_nginx
+
+echo "### Reiniciando Nginx ###"
