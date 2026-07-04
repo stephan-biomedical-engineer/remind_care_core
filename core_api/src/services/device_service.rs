@@ -30,12 +30,7 @@ pub async fn report_event(pool: &PgPool, device_id: &str, req: &DeviceEventReque
 pub async fn process_heartbeat(pool: &PgPool, device_id: &str, user_id: Option<uuid::Uuid>, req: &HeartbeatRequest) -> Result<HeartbeatResponse, ServiceError> {
     let firmware = req.firmware_version.as_deref();
 
-    // Atualizar heartbeat no banco
-    DeviceRepository::update_heartbeat(pool, device_id, firmware)
-        .await
-        .map_err(ServiceError::Database)?;
-
-    // Verificar se o schedule foi alterado (só se tiver usuário vinculado)
+    // Verificar se o schedule foi alterado ANTES de atualizar o heartbeat (só se tiver usuário vinculado)
     let schedule_updated = if let Some(uid) = user_id {
         let last_hb = DeviceRepository::get_last_heartbeat(pool, device_id)
             .await
@@ -47,6 +42,11 @@ pub async fn process_heartbeat(pool: &PgPool, device_id: &str, user_id: Option<u
     } else {
         false
     };
+
+    // Atualizar heartbeat no banco
+    DeviceRepository::update_heartbeat(pool, device_id, firmware)
+        .await
+        .map_err(ServiceError::Database)?;
 
     Ok(HeartbeatResponse {
         status: "ok".to_string(),
