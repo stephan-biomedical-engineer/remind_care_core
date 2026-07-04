@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   api:
-    build: .
+    build: ./core_api
     container_name: rust_server_api
     restart: always
     depends_on:
@@ -24,6 +24,22 @@ services:
       - "7878"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7878/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  report_api:
+    build: ./report_api
+    container_name: rust_server_report_api
+    restart: always
+    depends_on:
+      - postgres
+    env_file:
+      - .env.production
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 10s
       timeout: 5s
       retries: 5

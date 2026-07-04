@@ -1,4 +1,6 @@
 /target
+/core_api/target
+/report_api/node_modules
 .env
 .env.*
 !.env.example

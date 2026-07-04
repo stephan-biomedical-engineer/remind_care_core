@@ -15,7 +15,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   api:
-    build: .
+    build: ./core_api
     container_name: rust_server_api
     restart: unless-stopped
     depends_on:

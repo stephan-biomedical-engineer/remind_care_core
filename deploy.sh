@@ -8,9 +8,9 @@ echo "🚀 Iniciando deploy de produção..."
 echo "📥 Baixando atualizações do GitHub..."
 git pull origin main
 
-# 2. Build da imagem Rust otimizada
-echo "🔨 Construindo container da API..."
-docker compose -f docker-compose.prod.yml build api
+# 2. Build da imagem Rust e JS otimizadas
+echo "🔨 Construindo containers da API..."
+docker compose -f docker-compose.prod.yml build
 
 # 3. Levantar a infraestrutura sem desligar os antigos antes do build
 echo "🔄 Trocando containers (Zero Downtime)..."
