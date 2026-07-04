@@ -1,0 +1,55 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO device_events (device_id, event_type, event_timestamp, metadata)\n            VALUES ($1, $2, $3, $4)\n            RETURNING *\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "device_id",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "event_type",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "event_timestamp",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "metadata",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 5,
+        "name": "received_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Timestamptz",
+        "Jsonb"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "2ca6be1c30493f303f03023e5d0754f3d4fa39cb74fafee487d948589f1ad67d"
+}

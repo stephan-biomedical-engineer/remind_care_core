@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório Médico - RemindCare</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #2ecc71;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2ecc71;
+            margin: 0;
+        }
+        .header p {
+            color: #7f8c8d;
+            margin: 5px 0 0 0;
+        }
+        .patient-info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .patient-info h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #2ecc71;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .adherence-good {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .adherence-bad {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #bdc3c7;
+            margin-top: 50px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>RemindCare</h1>
+        <p>Relatório de Adesão ao Tratamento</p>
+        <p>Data de Emissão: <%= date %></p>
+    </div>
+
+    <div class="patient-info">
+        <h2>Dados do Paciente</h2>
+        <p><strong>Nome:</strong> <%= user.name %></p>
+        <p><strong>E-mail:</strong> <%= user.email %></p>
+    </div>
+
+    <h2>Histórico de Medicações</h2>
+    
+    <% if (medicines.length === 0) { %>
+        <p>Nenhuma medicação registrada para este paciente.</p>
+    <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Medicamento</th>
+                    <th>Dosagem</th>
+                    <th>Intervalo (h)</th>
+                    <th>Tomados</th>
+                    <th>Perdidos</th>
+                    <th>Taxa de Adesão</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% medicines.forEach(function(med) { 
+                    const total = parseInt(med.taken_count) + parseInt(med.missed_count);
+                    const rate = total > 0 ? Math.round((med.taken_count / total) * 100) : 0;
+                    const adherenceClass = rate >= 80 ? 'adherence-good' : (total > 0 ? 'adherence-bad' : '');
+                %>
+                <tr>
+                    <td><strong><%= med.name %></strong></td>
+                    <td><%= med.dosage %></td>
+                    <td><%= med.interval_hours %>h</td>
+                    <td><%= med.taken_count %></td>
+                    <td><%= med.missed_count %></td>
+                    <td class="<%= adherenceClass %>">
+                        <%= total > 0 ? rate + '%' : 'N/A' %>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } %>
+
+    <div class="footer">
+        <p>Este é um documento gerado automaticamente pelo sistema RemindCare.</p>
+        <p>Para dúvidas, contate o suporte.</p>
+    </div>
+
+</body>
+</html>

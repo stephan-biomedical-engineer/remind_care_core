@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE devices\n            SET last_heartbeat_at = now(), firmware_version = COALESCE($2, firmware_version)\n            WHERE id = $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Varchar"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "1948ccb9eb7dec1d87711976673b13bc2b03049d0bcb061feea6b5d5e554d990"
+}

@@ -1,0 +1,83 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE medicines\n            SET name = $1, dosage = $2, compartment = $3, scheduled_time = $4, week_days = $5, notes = $6, updated_at = CURRENT_TIMESTAMP\n            WHERE id = $7 AND user_id = $8\n            RETURNING *\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "dosage",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "compartment",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "scheduled_time",
+        "type_info": "Time"
+      },
+      {
+        "ordinal": 6,
+        "name": "week_days",
+        "type_info": "Int2Array"
+      },
+      {
+        "ordinal": 7,
+        "name": "notes",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 9,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Int4",
+        "Time",
+        "Int2Array",
+        "Text",
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "c2308736ce23b901913fde01aabc22b3ffc864d59af6cd5227feb4c1a3b68390"
+}
