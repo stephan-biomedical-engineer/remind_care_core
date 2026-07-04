@@ -11,7 +11,7 @@ use crate::responses::api_response::
 
 pub struct AuthUser
 {
-    pub user_id: i32,
+    pub user_id: uuid::Uuid,
 }
 
 impl FromRequestParts<AppState> for AuthUser
@@ -44,7 +44,7 @@ impl FromRequestParts<AppState> for AuthUser
             .map_err(|_| unauthorized("Invalid token"))?;
 
         let user_id = claims.sub
-            .parse::<i32>()
+            .parse::<uuid::Uuid>()
             .map_err(|_| internal_error("Invalid token payload"))?;
 
         Ok(AuthUser { user_id })

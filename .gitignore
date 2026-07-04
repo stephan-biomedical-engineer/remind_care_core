@@ -6,3 +6,4 @@
 !.env.example
 backups/
 *.dump
+*.pdf

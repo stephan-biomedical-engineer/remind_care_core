@@ -7,7 +7,7 @@ pub struct DeviceRepository;
 
 impl DeviceRepository {
     /// Buscar a agenda de medicamentos do usuário vinculado ao dispositivo
-    pub async fn get_schedule(pool: &PgPool, user_id: i32) -> Result<Vec<ScheduleEntry>, sqlx::Error> {
+    pub async fn get_schedule(pool: &PgPool, user_id: uuid::Uuid) -> Result<Vec<ScheduleEntry>, sqlx::Error> {
         let rows = sqlx::query_as!(
             ScheduleEntry,
             r#"
@@ -72,7 +72,7 @@ impl DeviceRepository {
     /// Verificar se o schedule foi alterado desde o último heartbeat
     pub async fn schedule_updated_since(
         pool: &PgPool,
-        user_id: i32,
+        user_id: uuid::Uuid,
         since: Option<DateTime<Utc>>,
     ) -> Result<bool, sqlx::Error> {
         // Se nunca fez heartbeat, considera como atualizado
@@ -138,7 +138,7 @@ impl DeviceRepository {
     }
 
     /// Parear dispositivo com usuário (bind)
-    pub async fn bind_to_user(pool: &PgPool, device_id: &str, user_id: i32) -> Result<bool, sqlx::Error> {
+    pub async fn bind_to_user(pool: &PgPool, device_id: &str, user_id: uuid::Uuid) -> Result<bool, sqlx::Error> {
         let result = sqlx::query!(
             r#"
             UPDATE devices

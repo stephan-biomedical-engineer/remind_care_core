@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 pub async fn create(
     pool: &PgPool,
-    user_id: i32,
+    user_id: uuid::Uuid,
     token_hash: String,
     expires_at: DateTime<Utc>,
 ) -> Result<(), sqlx::Error> {
@@ -25,8 +25,8 @@ pub async fn create(
 pub async fn find_valid_user_id(
     pool: &PgPool,
     token_hash: &str,
-) -> Result<Option<i32>, sqlx::Error> {
-    sqlx::query_scalar::<_, i32>(
+) -> Result<Option<uuid::Uuid>, sqlx::Error> {
+    sqlx::query_scalar::<_, uuid::Uuid>(
         "SELECT user_id
          FROM refresh_tokens
          WHERE token_hash = $1

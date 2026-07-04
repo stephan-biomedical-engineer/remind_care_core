@@ -9,7 +9,7 @@ use crate::responses::api_response::{ApiError, unauthorized};
 /// Diferente do AuthUser (JWT), aqui usamos API Key estática.
 pub struct AuthDevice {
     pub device_id: String,
-    pub user_id: Option<i32>,
+    pub user_id: Option<uuid::Uuid>,
 }
 
 impl FromRequestParts<AppState> for AuthDevice {

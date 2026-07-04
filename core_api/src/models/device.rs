@@ -7,7 +7,7 @@ use validator::Validate;
 #[derive(Debug, sqlx::FromRow)]
 pub struct Device {
     pub id: String,
-    pub user_id: Option<i32>,
+    pub user_id: Option<uuid::Uuid>,
     pub api_key_hash: String,
     pub firmware_version: Option<String>,
     pub last_heartbeat_at: Option<DateTime<Utc>>,
@@ -78,7 +78,7 @@ pub struct BindDeviceRequest {
 
 #[derive(Debug, Serialize)]
 pub struct ScheduleEntry {
-    pub medication_id: i32,
+    pub medication_id: uuid::Uuid,
     pub name: String,
     pub dosage: String,
     pub time: NaiveTime,

@@ -16,35 +16,21 @@ pub async fn list_users(pool: &PgPool) -> Result<Vec<User>, ServiceError>
         .map_err(ServiceError::Database)
 }
 
-pub async fn get_user(
-    pool: &PgPool,
-    id: i32,
-) -> Result<User, ServiceError>
-{
+pub async fn get_user(pool: &PgPool, id: uuid::Uuid) -> Result<User, ServiceError> {
     users_repository::find_by_id(pool, id)
         .await
         .map_err(ServiceError::Database)?
         .ok_or(ServiceError::NotFound)
 }
 
-pub async fn update_user
-(
-    pool: &PgPool,
-    id: i32,
-    name: String,
-) -> Result<User, ServiceError>
-{
+pub async fn update_user(pool: &PgPool, id: uuid::Uuid, name: String) -> Result<User, ServiceError> {
     users_repository::update(pool, id, name)
         .await
         .map_err(ServiceError::Database)?
         .ok_or(ServiceError::NotFound)
 }
 
-pub async fn delete_user(
-    pool: &PgPool,
-    id: i32,
-) -> Result<(), ServiceError>
-{
+pub async fn delete_user(pool: &PgPool, id: uuid::Uuid) -> Result<(), ServiceError> {
     let rows_affected = users_repository::delete(pool, id)
         .await
         .map_err(ServiceError::Database)?;

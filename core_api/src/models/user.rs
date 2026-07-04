@@ -4,7 +4,7 @@ use validator::Validate;
 #[derive(Debug, sqlx::FromRow)]
 pub struct User 
 {
-    pub id: i32,
+    pub id: uuid::Uuid,
     pub name: String,
     pub email: String,
     pub password_hash: String,
@@ -13,7 +13,7 @@ pub struct User
 #[derive(Debug, Serialize)]
 pub struct PublicUser
 {
-    pub id: i32,
+    pub id: uuid::Uuid,
     pub name: String,
     pub email: String,
 }

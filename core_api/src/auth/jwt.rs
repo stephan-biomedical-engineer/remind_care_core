@@ -36,7 +36,7 @@ pub fn verify_password(password: &str, password_hash: &str)
 
 pub fn create_jwt
     (
-        user_id: i32,
+        user_id: uuid::Uuid,
         secret: &str,
     ) -> Result<String, jsonwebtoken::errors::Error>
 {

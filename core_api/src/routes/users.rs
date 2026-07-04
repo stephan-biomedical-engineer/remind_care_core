@@ -29,7 +29,7 @@ pub async fn get_user
     (
         auth_user: AuthUser,
         State(state): State<AppState>,
-        Path(id): Path<i32>,
+        Path(id): Path<uuid::Uuid>,
     ) -> Result<Json<PublicUser>, ApiError>
 {
     if auth_user.user_id != id
@@ -48,7 +48,7 @@ pub async fn update_user
     (
         auth_user: AuthUser,
         State(state): State<AppState>,
-        Path(id): Path<i32>,
+        Path(id): Path<uuid::Uuid>,
         Json(payload): Json<UpdateUserRequest>,
     ) -> Result<Json<PublicUser>, ApiError>
 {
@@ -71,7 +71,7 @@ pub async fn delete_user
     (
         auth_user: AuthUser,
         State(state): State<AppState>,
-        Path(id): Path<i32>,
+        Path(id): Path<uuid::Uuid>,
     ) -> Result<StatusCode, ApiError>
 {
     if auth_user.user_id != id

@@ -4,9 +4,9 @@ use validator::Validate;
 
 #[derive(Debug, sqlx::FromRow, Serialize)]
 pub struct Medicine {
-    pub id: i32,
+    pub id: uuid::Uuid,
     #[serde(skip_serializing)] // Hide from JSON responses
-    pub user_id: i32,
+    pub user_id: uuid::Uuid,
     pub name: String,
     pub dosage: String,
     pub compartment: i32,
@@ -43,17 +43,17 @@ pub struct UpdateMedicineRequest {
 
 #[derive(Debug, sqlx::FromRow, Serialize)]
 pub struct MedicineLog {
-    pub id: i32,
+    pub id: uuid::Uuid,
     #[serde(skip_serializing)]
-    pub user_id: i32,
-    pub medicine_id: i32,
+    pub user_id: uuid::Uuid,
+    pub medicine_id: uuid::Uuid,
     pub situation: String,
     pub opened_at: DateTime<Utc>,
 }
 
 #[derive(Debug, Deserialize, Validate)]
 pub struct CreateMedicineLogRequest {
-    pub medicine_id: i32,
+    pub medicine_id: uuid::Uuid,
     #[validate(length(min = 1, max = 50))]
     pub situation: String,
 }

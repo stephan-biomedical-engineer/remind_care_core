@@ -4,7 +4,7 @@ use crate::models::medicine::{Medicine, CreateMedicineRequest, UpdateMedicineReq
 pub struct MedicineRepository;
 
 impl MedicineRepository {
-    pub async fn create(pool: &PgPool, user_id: i32, req: &CreateMedicineRequest) -> Result<Medicine, sqlx::Error> {
+    pub async fn create(pool: &PgPool, user_id: uuid::Uuid, req: &CreateMedicineRequest) -> Result<Medicine, sqlx::Error> {
         sqlx::query_as!(
             Medicine,
             r#"
@@ -24,7 +24,7 @@ impl MedicineRepository {
         .await
     }
 
-    pub async fn find_by_user(pool: &PgPool, user_id: i32) -> Result<Vec<Medicine>, sqlx::Error> {
+    pub async fn find_by_user(pool: &PgPool, user_id: uuid::Uuid) -> Result<Vec<Medicine>, sqlx::Error> {
         sqlx::query_as!(
             Medicine,
             r#"
@@ -36,7 +36,7 @@ impl MedicineRepository {
         .await
     }
 
-    pub async fn find_by_id_and_user(pool: &PgPool, id: i32, user_id: i32) -> Result<Option<Medicine>, sqlx::Error> {
+    pub async fn find_by_id_and_user(pool: &PgPool, id: uuid::Uuid, user_id: uuid::Uuid) -> Result<Option<Medicine>, sqlx::Error> {
         sqlx::query_as!(
             Medicine,
             r#"
@@ -49,7 +49,7 @@ impl MedicineRepository {
         .await
     }
 
-    pub async fn update(pool: &PgPool, id: i32, user_id: i32, req: &UpdateMedicineRequest) -> Result<Option<Medicine>, sqlx::Error> {
+    pub async fn update(pool: &PgPool, id: uuid::Uuid, user_id: uuid::Uuid, req: &UpdateMedicineRequest) -> Result<Option<Medicine>, sqlx::Error> {
         sqlx::query_as!(
             Medicine,
             r#"
@@ -71,7 +71,7 @@ impl MedicineRepository {
         .await
     }
 
-    pub async fn delete(pool: &PgPool, id: i32, user_id: i32) -> Result<u64, sqlx::Error> {
+    pub async fn delete(pool: &PgPool, id: uuid::Uuid, user_id: uuid::Uuid) -> Result<u64, sqlx::Error> {
         let result = sqlx::query!(
             r#"
             DELETE FROM medicines WHERE id = $1 AND user_id = $2
@@ -85,7 +85,7 @@ impl MedicineRepository {
         Ok(result.rows_affected())
     }
     
-    pub async fn create_log(pool: &PgPool, user_id: i32, medicine_id: i32, situation: &str) -> Result<MedicineLog, sqlx::Error> {
+    pub async fn create_log(pool: &PgPool, user_id: uuid::Uuid, medicine_id: uuid::Uuid, situation: &str) -> Result<MedicineLog, sqlx::Error> {
         sqlx::query_as!(
             MedicineLog,
             r#"
@@ -101,7 +101,7 @@ impl MedicineRepository {
         .await
     }
     
-    pub async fn get_logs_today(pool: &PgPool, user_id: i32) -> Result<Vec<MedicineLog>, sqlx::Error> {
+    pub async fn get_logs_today(pool: &PgPool, user_id: uuid::Uuid) -> Result<Vec<MedicineLog>, sqlx::Error> {
         sqlx::query_as!(
             MedicineLog,
             r#"

@@ -34,7 +34,7 @@ pub async fn create
     .await
 }
 
-pub async fn find_by_id(pool: &PgPool, id: i32) 
+pub async fn find_by_id(pool: &PgPool, id: uuid::Uuid) 
     -> Result<Option<User>, sqlx::Error> 
 {
     sqlx::query_as::<Postgres, User>("SELECT id, name, email, password_hash FROM users WHERE id = $1")
@@ -43,7 +43,7 @@ pub async fn find_by_id(pool: &PgPool, id: i32)
         .await
 }
 
-pub async fn update(pool: &PgPool, id: i32, name: String) 
+pub async fn update(pool: &PgPool, id: uuid::Uuid, name: String) 
     -> Result<Option<User>, sqlx::Error> 
 {
     sqlx::query_as::<Postgres, User>("UPDATE users SET name = $1 WHERE id = $2 RETURNING id, name, email, password_hash")
@@ -53,7 +53,7 @@ pub async fn update(pool: &PgPool, id: i32, name: String)
         .await
 }
 
-pub async fn delete(pool: &PgPool, id: i32) 
+pub async fn delete(pool: &PgPool, id: uuid::Uuid) 
     -> Result<u64, sqlx::Error> 
 {
     let result = sqlx::query("DELETE FROM users WHERE id = $1")

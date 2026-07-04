@@ -35,7 +35,7 @@ pub async fn list_medicines(
 pub async fn get_medicine(
     auth_user: AuthUser,
     State(state): State<AppState>,
-    Path(id): Path<i32>,
+    Path(id): Path<uuid::Uuid>,
 ) -> Result<Json<Medicine>, ApiError> {
     let medicine = medicine_service::get_medicine(&state.pool, id, auth_user.user_id)
         .await
@@ -47,7 +47,7 @@ pub async fn get_medicine(
 pub async fn update_medicine(
     auth_user: AuthUser,
     State(state): State<AppState>,
-    Path(id): Path<i32>,
+    Path(id): Path<uuid::Uuid>,
     Json(payload): Json<UpdateMedicineRequest>,
 ) -> Result<Json<Medicine>, ApiError> {
     payload.validate().map_err(|_| validation_error("Invalid medicine update payload"))?;
@@ -62,7 +62,7 @@ pub async fn update_medicine(
 pub async fn delete_medicine(
     auth_user: AuthUser,
     State(state): State<AppState>,
-    Path(id): Path<i32>,
+    Path(id): Path<uuid::Uuid>,
 ) -> Result<StatusCode, ApiError> {
     medicine_service::delete_medicine(&state.pool, id, auth_user.user_id)
         .await

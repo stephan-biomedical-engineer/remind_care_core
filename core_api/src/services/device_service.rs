@@ -5,7 +5,7 @@ use crate::models::device::*;
 use crate::repositories::device_repository::DeviceRepository;
 use crate::services::users_service::ServiceError;
 
-pub async fn get_schedule(pool: &PgPool, device_id: &str, user_id: Option<i32>) -> Result<ScheduleResponse, ServiceError> {
+pub async fn get_schedule(pool: &PgPool, device_id: &str, user_id: Option<uuid::Uuid>) -> Result<ScheduleResponse, ServiceError> {
     let user_id = user_id.ok_or(ServiceError::NotFound)?; // Dispositivo não pareado
 
     let schedule = DeviceRepository::get_schedule(pool, user_id)
@@ -27,7 +27,7 @@ pub async fn report_event(pool: &PgPool, device_id: &str, req: &DeviceEventReque
         .map_err(ServiceError::Database)
 }
 
-pub async fn process_heartbeat(pool: &PgPool, device_id: &str, user_id: Option<i32>, req: &HeartbeatRequest) -> Result<HeartbeatResponse, ServiceError> {
+pub async fn process_heartbeat(pool: &PgPool, device_id: &str, user_id: Option<uuid::Uuid>, req: &HeartbeatRequest) -> Result<HeartbeatResponse, ServiceError> {
     let firmware = req.firmware_version.as_deref();
 
     // Atualizar heartbeat no banco
@@ -70,7 +70,7 @@ pub async fn report_log(pool: &PgPool, device_id: &str, req: &DeviceLogRequest) 
     .map_err(ServiceError::Database)
 }
 
-pub async fn bind_device(pool: &PgPool, user_id: i32, req: &BindDeviceRequest) -> Result<(), ServiceError> {
+pub async fn bind_device(pool: &PgPool, user_id: uuid::Uuid, req: &BindDeviceRequest) -> Result<(), ServiceError> {
     let bound = DeviceRepository::bind_to_user(pool, &req.device_id, user_id)
         .await
         .map_err(ServiceError::Database)?;
