@@ -95,24 +95,32 @@
                 <tr>
                     <th>Medicamento</th>
                     <th>Dosagem</th>
-                    <th>Intervalo (h)</th>
-                    <th>Tomados</th>
-                    <th>Perdidos</th>
+                    <th>Compartimento</th>
+                    <th>Horário</th>
+                    <th>No Horário</th>
+                    <th>Atrasados</th>
+                    <th>Alertas</th>
                     <th>Taxa de Adesão</th>
                 </tr>
             </thead>
             <tbody>
                 <% medicines.forEach(function(med) { 
-                    const total = parseInt(med.taken_count) + parseInt(med.missed_count);
-                    const rate = total > 0 ? Math.round((med.taken_count / total) * 100) : 0;
+                    const onTime = parseInt(med.on_time_count);
+                    const late = parseInt(med.late_count);
+                    const warning = parseInt(med.warning_count);
+                    const total = onTime + late + warning;
+                    const rate = total > 0 ? Math.round((onTime / total) * 100) : 0;
                     const adherenceClass = rate >= 80 ? 'adherence-good' : (total > 0 ? 'adherence-bad' : '');
+                    const timeStr = med.scheduled_time ? med.scheduled_time.substring(0, 5) : '-';
                 %>
                 <tr>
                     <td><strong><%= med.name %></strong></td>
                     <td><%= med.dosage %></td>
-                    <td><%= med.interval_hours %>h</td>
-                    <td><%= med.taken_count %></td>
-                    <td><%= med.missed_count %></td>
+                    <td><%= med.compartment %></td>
+                    <td><%= timeStr %></td>
+                    <td><%= onTime %></td>
+                    <td><%= late %></td>
+                    <td><%= warning %></td>
                     <td class="<%= adherenceClass %>">
                         <%= total > 0 ? rate + '%' : 'N/A' %>
                     </td>

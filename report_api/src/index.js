@@ -54,11 +54,13 @@ app.get('/', authenticate, async (req, res) => {
     const user = userResult.rows[0];
 
     const medicinesResult = await pool.query(`
-      SELECT m.id, m.name, m.dosage, m.interval_hours, m.created_at,
-             (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.status = 'taken') as taken_count,
-             (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.status = 'missed') as missed_count
+      SELECT m.id, m.name, m.dosage, m.compartment, m.scheduled_time, m.week_days, m.created_at,
+             (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'onTime') as on_time_count,
+             (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'late') as late_count,
+             (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'warning') as warning_count
       FROM medicines m 
       WHERE m.user_id = $1
+      ORDER BY m.scheduled_time ASC
     `, [userId]);
     const medicines = medicinesResult.rows;
 
