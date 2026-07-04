@@ -75,8 +75,8 @@ pub fn build_app(state: AppState) -> Router
 
     let medicine_routes = Router::new()
         .route("/", get(crate::routes::medicine::list_medicines).post(crate::routes::medicine::create_medicine))
-        .route("/{id}", get(crate::routes::medicine::get_medicine).put(crate::routes::medicine::update_medicine).delete(crate::routes::medicine::delete_medicine))
-        .route("/logs", get(crate::routes::medicine::get_today_logs).post(crate::routes::medicine::create_log));
+        .route("/logs", get(crate::routes::medicine::get_today_logs).post(crate::routes::medicine::create_log))
+        .route("/{id}", get(crate::routes::medicine::get_medicine).put(crate::routes::medicine::update_medicine).delete(crate::routes::medicine::delete_medicine));
 
     let device_routes = Router::new()
         .route("/schedule", get(crate::routes::device::get_schedule))
