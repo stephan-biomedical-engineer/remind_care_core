@@ -41,7 +41,7 @@ app.get('/health', (req, res) => {
 });
 
 // Rota para Gerar Relatório em PDF
-app.get('/', authenticate, async (req, res) => {
+app.get('/doc', authenticate, async (req, res) => {
   const userId = req.user.sub;
   let browser = null;
 
@@ -107,6 +107,45 @@ app.get('/', authenticate, async (req, res) => {
     if (browser) {
       await browser.close();
     }
+  }
+});
+
+// Rota para Retornar Dados de Estatísticas em JSON
+app.get('/stats', authenticate, async (req, res) => {
+  const userId = req.user.sub;
+  try {
+    const userResult = await pool.query('SELECT id, name, email FROM users WHERE id = $1', [userId]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+    const user = userResult.rows[0];
+
+    const medicinesResult = await pool.query(`
+      SELECT m.id, m.name, m.dosage, m.compartment, m.scheduled_time, m.week_days, m.created_at,
+             (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'onTime') as on_time_count,
+             (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'late') as late_count,
+             (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'warning') as warning_count
+      FROM medicines m 
+      WHERE m.user_id = $1
+      ORDER BY m.scheduled_time ASC
+    `, [userId]);
+    const medicines = medicinesResult.rows;
+
+    const devicesResult = await pool.query(`
+      SELECT id, name, firmware_version, created_at
+      FROM devices
+      WHERE user_id = $1
+    `, [userId]);
+    const devices = devicesResult.rows;
+
+    res.json({
+      user,
+      devices,
+      stats: medicines
+    });
+  } catch (error) {
+    console.error('Erro ao buscar estatísticas:', error);
+    res.status(500).json({ error: 'Falha interna ao buscar estatísticas' });
   }
 });
 
