@@ -132,7 +132,7 @@ app.get('/stats', authenticate, async (req, res) => {
     const medicines = medicinesResult.rows;
 
     const devicesResult = await pool.query(`
-      SELECT id, name, firmware_version, created_at
+      SELECT id, firmware_version, created_at
       FROM devices
       WHERE user_id = $1
     `, [userId]);
