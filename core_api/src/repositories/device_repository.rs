@@ -153,4 +153,18 @@ impl DeviceRepository {
 
         Ok(result.rows_affected() > 0)
     }
+
+    /// Buscar o dono atual do dispositivo
+    pub async fn get_device_owner(pool: &PgPool, device_id: &str) -> Result<Option<uuid::Uuid>, sqlx::Error> {
+        let row = sqlx::query!(
+            r#"
+            SELECT user_id FROM devices WHERE id = $1
+            "#,
+            device_id
+        )
+        .fetch_optional(pool)
+        .await?;
+
+        Ok(row.and_then(|r| r.user_id))
+    }
 }
