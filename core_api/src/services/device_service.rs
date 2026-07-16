@@ -35,9 +35,9 @@ pub async fn report_event(pool: &PgPool, device_id: &str, req: &DeviceEventReque
                         // Descobre o dono da caixa
                         if let Ok(Some(user_id)) = DeviceRepository::get_device_owner(pool, device_id).await {
                             let situation = if req.event_type == "medication_taken" {
-                                "Taken"
+                                "onTime"
                             } else {
-                                "Missed"
+                                "missed"
                             };
 
                             // Salva na tabela clínica do paciente
