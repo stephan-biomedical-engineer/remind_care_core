@@ -66,10 +66,10 @@ app.get('/doc', authenticate, async (req, res) => {
 
     // 2. Renderizar HTML com EJS
     const templatePath = path.join(__dirname, '../templates/report.ejs');
-    const html = await ejs.renderFile(templatePath, {
-      user,
-      medicines,
-      date: new Date().toLocaleDateString('pt-BR')
+    const html = await ejs.renderFile(path.join(__dirname, '../templates/report.ejs'), {
+      user: user,
+      medicines: medicines,
+      date: new Date().toLocaleString('pt-BR')
     });
 
     // 3. Gerar PDF com Puppeteer
