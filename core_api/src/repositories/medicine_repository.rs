@@ -49,6 +49,19 @@ impl MedicineRepository {
         .await
     }
 
+    pub async fn find_by_compartment_and_user(pool: &PgPool, compartment: i32, user_id: uuid::Uuid) -> Result<Option<Medicine>, sqlx::Error> {
+        sqlx::query_as!(
+            Medicine,
+            r#"
+            SELECT * FROM medicines WHERE compartment = $1 AND user_id = $2 LIMIT 1
+            "#,
+            compartment,
+            user_id
+        )
+        .fetch_optional(pool)
+        .await
+    }
+
     pub async fn update(pool: &PgPool, id: uuid::Uuid, user_id: uuid::Uuid, req: &UpdateMedicineRequest) -> Result<Option<Medicine>, sqlx::Error> {
         sqlx::query_as!(
             Medicine,

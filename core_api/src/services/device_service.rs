@@ -24,35 +24,40 @@ pub async fn report_event(pool: &PgPool, device_id: &str, req: &DeviceEventReque
 
     let event = DeviceRepository::insert_event(pool, device_id, &req.event_type, event_timestamp, req.metadata.clone())
         .await
-        .map_err(ServiceError::Database)?;
-
-    // Tradução de Telemetria (Hardware) -> Evento Clínico (Aplicação)
-    if req.event_type == "medication_missed" || req.event_type == "medication_taken" {
+        .map_err(ServiceError::Database)?;    // Tradução de Telemetria (Hardware Edge AI) -> Evento Clínico (Aplicação)
+    if req.event_type == "medication_status" {
         if let Some(meta) = &req.metadata {
-            if let Some(med_id_val) = meta.get("medication_id") {
-                if let Some(med_id_str) = med_id_val.as_str() {
-                    if let Ok(medication_id) = uuid::Uuid::parse_str(med_id_str) {
-                        // Descobre o dono da caixa
-                        if let Ok(Some(user_id)) = DeviceRepository::get_device_owner(pool, device_id).await {
-                            let situation = if req.event_type == "medication_taken" {
-                                "onTime"
-                            } else {
-                                "missed"
-                            };
+            if let Ok(Some(user_id)) = DeviceRepository::get_device_owner(pool, device_id).await {
+                
+                let mut situation = "missed".to_string();
+                let mut medication_id_opt: Option<uuid::Uuid> = None;
 
-                            // Salva na tabela clínica do paciente
-                            let _ = crate::repositories::medicine_repository::MedicineRepository::create_log(
-                                pool,
-                                user_id,
-                                medication_id,
-                                situation
-                            ).await;
+                if let Some(med_id_val) = meta.get("medication_id") {
+                    if let Some(med_id_str) = med_id_val.as_str() {
+                        if let Ok(med_id) = uuid::Uuid::parse_str(med_id_str) {
+                            medication_id_opt = Some(med_id);
                         }
                     }
+                } 
+                
+                if let Some(sit_val) = meta.get("situation") {
+                    if let Some(sit_str) = sit_val.as_str() {
+                        situation = sit_str.to_string();
+                    }
+                }
+
+                // Salva na tabela clínica do paciente de forma agnóstica
+                if let Some(medication_id) = medication_id_opt {
+                    let _ = crate::repositories::medicine_repository::MedicineRepository::create_log(
+                        pool,
+                        user_id,
+                        medication_id,
+                        &situation
+                    ).await;
                 }
             }
         }
-    }
+    }        
 
     Ok(event)
 }
