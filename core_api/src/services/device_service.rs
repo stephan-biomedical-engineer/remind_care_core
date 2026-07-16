@@ -27,19 +27,25 @@ pub async fn report_event(pool: &PgPool, device_id: &str, req: &DeviceEventReque
         .map_err(ServiceError::Database)?;
 
     // Tradução de Telemetria (Hardware) -> Evento Clínico (Aplicação)
-    if req.event_type == "medication_missed" {
+    if req.event_type == "medication_missed" || req.event_type == "medication_taken" {
         if let Some(meta) = &req.metadata {
             if let Some(med_id_val) = meta.get("medication_id") {
                 if let Some(med_id_str) = med_id_val.as_str() {
                     if let Ok(medication_id) = uuid::Uuid::parse_str(med_id_str) {
                         // Descobre o dono da caixa
                         if let Ok(Some(user_id)) = DeviceRepository::get_device_owner(pool, device_id).await {
+                            let situation = if req.event_type == "medication_taken" {
+                                "Taken"
+                            } else {
+                                "Missed"
+                            };
+
                             // Salva na tabela clínica do paciente
                             let _ = crate::repositories::medicine_repository::MedicineRepository::create_log(
                                 pool,
                                 user_id,
                                 medication_id,
-                                "Atrasado/Perdido"
+                                situation
                             ).await;
                         }
                     }
