@@ -58,6 +58,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./landing_page:/var/www/landing_page:ro
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     # Comando modificado para recarregar as configurações a cada 6h (necessário para renovação do Certbot)
