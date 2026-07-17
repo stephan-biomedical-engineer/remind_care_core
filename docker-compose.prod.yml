@@ -20,6 +20,8 @@ services:
       - postgres
     env_file:
       - .env.production
+    volumes:
+      - ./core_api/service_account.json:/app/service_account.json:ro
     expose:
       - "7878"
     healthcheck:
