@@ -37,7 +37,7 @@ pub struct AppState
 pub fn build_app(state: AppState) -> Router 
 {
     let cors = CorsLayer::new()
-        .allow_origin(tower_http::cors::Any)
+        .allow_origin("https://remindcare.com.br".parse::<axum::http::HeaderValue>().unwrap())
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
         .allow_headers([AUTHORIZATION, CONTENT_TYPE]);
 
