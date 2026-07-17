@@ -7,7 +7,7 @@ pub async fn find_all(pool: &PgPool)
 {
     sqlx::query_as::<Postgres, User>
         (
-            "SELECT id, name, email, password_hash FROM users ORDER BY id"
+            "SELECT id, name, email, password_hash, fcm_token FROM users ORDER BY id"
         )
         .fetch_all(pool)
         .await
@@ -25,7 +25,7 @@ pub async fn create
     (
         "INSERT INTO users (name, email, password_hash)
          VALUES ($1, $2, $3)
-         RETURNING id, name, email, password_hash"
+         RETURNING id, name, email, password_hash, fcm_token"
     )
     .bind(name)
     .bind(email)
@@ -37,7 +37,7 @@ pub async fn create
 pub async fn find_by_id(pool: &PgPool, id: uuid::Uuid) 
     -> Result<Option<User>, sqlx::Error> 
 {
-    sqlx::query_as::<Postgres, User>("SELECT id, name, email, password_hash FROM users WHERE id = $1")
+    sqlx::query_as::<Postgres, User>("SELECT id, name, email, password_hash, fcm_token FROM users WHERE id = $1")
         .bind(id)
         .fetch_optional(pool)
         .await
@@ -46,7 +46,7 @@ pub async fn find_by_id(pool: &PgPool, id: uuid::Uuid)
 pub async fn update(pool: &PgPool, id: uuid::Uuid, name: String) 
     -> Result<Option<User>, sqlx::Error> 
 {
-    sqlx::query_as::<Postgres, User>("UPDATE users SET name = $1 WHERE id = $2 RETURNING id, name, email, password_hash")
+    sqlx::query_as::<Postgres, User>("UPDATE users SET name = $1 WHERE id = $2 RETURNING id, name, email, password_hash, fcm_token")
         .bind(name)
         .bind(id)
         .fetch_optional(pool)
@@ -66,8 +66,18 @@ pub async fn delete(pool: &PgPool, id: uuid::Uuid)
 pub async fn find_by_email(pool: &PgPool, email: &str) 
     -> Result<Option<User>, sqlx::Error> 
 {
-    sqlx::query_as::<Postgres, User>("SELECT id, name, email, password_hash FROM users WHERE email = $1")
+    sqlx::query_as::<Postgres, User>("SELECT id, name, email, password_hash, fcm_token FROM users WHERE email = $1")
         .bind(email)
+        .fetch_optional(pool)
+        .await
+}
+
+pub async fn update_fcm_token(pool: &PgPool, id: uuid::Uuid, fcm_token: String) 
+    -> Result<Option<User>, sqlx::Error> 
+{
+    sqlx::query_as::<Postgres, User>("UPDATE users SET fcm_token = $1 WHERE id = $2 RETURNING id, name, email, password_hash, fcm_token")
+        .bind(fcm_token)
+        .bind(id)
         .fetch_optional(pool)
         .await
 }

@@ -1,7 +1,7 @@
 use axum::{extract::{Path, State}, http::StatusCode, Json};
 use validator::Validate;
 
-use crate::models::user::{PublicUser, UpdateUserRequest};
+use crate::models::user::{PublicUser, UpdateUserRequest, UpdateFcmTokenRequest};
 use crate::responses::api_response::{service_error, unauthorized, validation_error, ApiError};
 use crate::services::users_service;
 use crate::auth::extractor::AuthUser;
@@ -84,4 +84,21 @@ pub async fn delete_user
         .map_err(|err| service_error(err, "Failed to delete user"))?;
 
     Ok(StatusCode::NO_CONTENT)
+}
+
+pub async fn update_user_fcm_token
+    (
+        auth_user: AuthUser,
+        State(state): State<AppState>,
+        Json(payload): Json<UpdateFcmTokenRequest>,
+    ) -> Result<Json<PublicUser>, ApiError>
+{
+    payload.validate()
+        .map_err(|_| validation_error("Invalid fcm_token payload"))?;
+        
+    let user = users_service::update_fcm_token(&state.pool, auth_user.user_id, payload.fcm_token)
+        .await
+        .map_err(|err| service_error(err, "Failed to update FCM token"))?;
+
+    Ok(Json(user.into()))
 }

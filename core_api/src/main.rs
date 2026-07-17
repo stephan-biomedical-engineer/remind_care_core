@@ -3,6 +3,8 @@ use sqlx::PgPool;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
 use tracing::info;
+use std::fs::File;
+use oauth_fcm::create_shared_token_manager;
 
 use rust_raw_server::{app::{build_app, AppState}, config::Config, telemetry};
 
@@ -28,10 +30,19 @@ async fn main()
         .await
         .expect("[INIT FATAL] Falha ao executar migrations");
 
+    let fcm_manager = if let Ok(file) = File::open("service_account.json") {
+        info!("Firebase credentials encontradas, ativando Push Notifications.");
+        create_shared_token_manager(file).ok()
+    } else {
+        info!("service_account.json não encontrado. Push Notifications desativadas.");
+        None
+    };
+
     let state = AppState 
     {
         pool,
         config, 
+        fcm_manager,
     };
 
     let app = build_app(state);

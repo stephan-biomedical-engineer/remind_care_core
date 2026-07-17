@@ -30,9 +30,17 @@ pub async fn report_event(
 ) -> Result<(StatusCode, Json<DeviceEvent>), ApiError> {
     payload.validate().map_err(|_| validation_error("Invalid event payload"))?;
 
-    let event = device_service::report_event(&state.pool, &auth_device.device_id, &payload)
-        .await
-        .map_err(|err| service_error(err, "Failed to save device event"))?;
+    let project_id = std::env::var("FCM_PROJECT_ID").unwrap_or_else(|_| "remindcare-1efbd".to_string());
+    
+    let event = device_service::report_event(
+        &state.pool, 
+        &state.fcm_manager, 
+        &project_id, 
+        &auth_device.device_id, 
+        &payload
+    )
+    .await
+    .map_err(|err| service_error(err, "Failed to save device event"))?;
 
     Ok((StatusCode::CREATED, Json(event)))
 }

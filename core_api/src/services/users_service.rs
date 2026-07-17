@@ -42,3 +42,10 @@ pub async fn delete_user(pool: &PgPool, id: uuid::Uuid) -> Result<(), ServiceErr
 
     Ok(())
 }
+
+pub async fn update_fcm_token(pool: &PgPool, id: uuid::Uuid, fcm_token: String) -> Result<User, ServiceError> {
+    users_repository::update_fcm_token(pool, id, fcm_token)
+        .await
+        .map_err(ServiceError::Database)?
+        .ok_or(ServiceError::NotFound)
+}

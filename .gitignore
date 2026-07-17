@@ -7,3 +7,4 @@
 backups/
 *.dump
 *.pdf
+service_account.json

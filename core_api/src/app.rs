@@ -3,6 +3,7 @@ use tokio::time::{sleep, Duration};
 use sqlx::PgPool;
 use tower_governor::{governor::GovernorConfigBuilder, GovernorLayer};
 use tower_http::cors::CorsLayer;
+use oauth_fcm::SharedTokenManager;
 
 
 use axum::
@@ -30,6 +31,7 @@ pub struct AppState
 {
     pub pool: PgPool,
     pub config: Config,
+    pub fcm_manager: Option<SharedTokenManager>,
 }
 
 pub fn build_app(state: AppState) -> Router 
@@ -91,6 +93,7 @@ pub fn build_app(state: AppState) -> Router
     Router::new()
         .route("/health", get(health))
         .route("/users", get(list_users))
+        .route("/users/me/fcm-token", axum::routing::put(crate::routes::users::update_user_fcm_token))
         .route("/users/{id}", get(get_user).put(update_user).delete(delete_user))
         .nest("/auth", auth_routes)
         .nest("/medicines", medicine_routes)
