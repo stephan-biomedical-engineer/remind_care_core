@@ -34,3 +34,4 @@ dist-ssr
 *.sln
 *.sw?
 landing_page_old/
+*.apk
