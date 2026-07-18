@@ -33,7 +33,7 @@ onMounted(() => {
       <div class="container nav-content">
         <div class="logo">
           <div class="logo-icon"></div>
-          Remind<span>Care</span>
+          RemindCare
         </div>
         <div class="nav-links">
           <a href="#solucao">Visão Geral</a>
@@ -140,11 +140,11 @@ onMounted(() => {
     <footer class="footer">
       <div class="container footer-content">
         <div class="footer-brand">
-          <div class="logo">Remind<span>Care</span></div>
+          <div class="logo">RemindCare</div>
           <p>O ecossistema definitivo para a gestão médica inteligente.</p>
         </div>
         <div class="footer-links">
-          <p>&copy; 2026 RemindCare Systems. Desenvolvido com Vue.js 💚, Rust 🦀 e Flutter 💙.</p>
+          <p>&copy; 2026 RemindCare Systems. Desenvolvido com Rust 🦀 e Flutter 💙.</p>
         </div>
       </div>
     </footer>
