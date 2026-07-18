@@ -146,7 +146,7 @@
             </thead>
             <tbody>
                 <% recentLogs.forEach(function(log) { 
-                    const logDate = new Date(log.opened_at).toLocaleString('pt-BR');
+                    const logDate = new Date(log.opened_at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
                     let sit = log.situation;
                     let sitClass = '';
                     if(sit === 'early') { sit = 'Adiantado'; sitClass = 'adherence-good'; }

@@ -80,7 +80,7 @@ app.get('/doc', authenticate, async (req, res) => {
       user: user,
       medicines: medicines,
       recentLogs: recentLogs,
-      date: new Date().toLocaleString('pt-BR')
+      date: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
     });
 
     // 3. Gerar PDF com Puppeteer
