@@ -133,6 +133,40 @@
         </table>
     <% } %>
 
+    <br>
+    <h2>Histórico Detalhado (Todos os Registros)</h2>
+    <% if (typeof recentLogs !== 'undefined' && recentLogs.length > 0) { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data e Hora</th>
+                    <th>Medicamento</th>
+                    <th>Situação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% recentLogs.forEach(function(log) { 
+                    const logDate = new Date(log.opened_at).toLocaleString('pt-BR');
+                    let sit = log.situation;
+                    let sitClass = '';
+                    if(sit === 'early') { sit = 'Adiantado'; sitClass = 'adherence-good'; }
+                    else if(sit === 'onTime') { sit = 'No Horário'; sitClass = 'adherence-good'; }
+                    else if(sit === 'warning') { sit = 'Atrasado'; sitClass = 'adherence-bad'; }
+                    else if(sit === 'late') { sit = 'Muito Atrasado'; sitClass = 'adherence-bad'; }
+                    else if(sit === 'missed') { sit = 'Esquecido'; sitClass = 'adherence-bad'; }
+                %>
+                <tr>
+                    <td><%= logDate %></td>
+                    <td><strong><%= log.medicine_name %></strong></td>
+                    <td class="<%= sitClass %>"><%= sit %></td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>Nenhum evento registrado recentemente.</p>
+    <% } %>
+
     <div class="footer">
         <p>Este é um documento gerado automaticamente pelo sistema RemindCare.</p>
         <p>Para dúvidas, contate o suporte.</p>

@@ -65,11 +65,21 @@ app.get('/doc', authenticate, async (req, res) => {
     `, [userId]);
     const medicines = medicinesResult.rows;
 
+    const logsResult = await pool.query(`
+      SELECT m.name as medicine_name, l.situation, l.opened_at
+      FROM medicine_logs l
+      JOIN medicines m ON l.medicine_id = m.id
+      WHERE l.user_id = $1
+      ORDER BY l.opened_at DESC
+    `, [userId]);
+    const recentLogs = logsResult.rows;
+
     // 2. Renderizar HTML com EJS
     const templatePath = path.join(__dirname, '../templates/report.ejs');
     const html = await ejs.renderFile(path.join(__dirname, '../templates/report.ejs'), {
       user: user,
       medicines: medicines,
+      recentLogs: recentLogs,
       date: new Date().toLocaleString('pt-BR')
     });
 
