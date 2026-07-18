@@ -37,7 +37,7 @@ onMounted(() => {
           <a href="#solucao">Visão Geral</a>
           <a href="#hardware">A Caixa Inteligente</a>
           <a href="#app">O Aplicativo</a>
-          <a href="remindcare-release.apk" download class="btn-login">Baixar App (.APK) <span class="arrow">↓</span></a>
+          <a href="remindcare-release.apk?v=2" download class="btn-login">Baixar App (.APK) <span class="arrow">↓</span></a>
         </div>
       </div>
     </nav>
@@ -51,7 +51,7 @@ onMounted(() => {
           <p>Esqueça os alarmes frustrantes e as planilhas manuais. A RemindCare une Hardware Premium e Software em Nuvem para garantir 100% de adesão ao tratamento médico da sua família.</p>
           
           <div class="cta-group">
-            <a href="remindcare-release.apk" download class="btn-primary glow-effect">
+            <a href="remindcare-release.apk?v=2" download class="btn-primary glow-effect">
               Baixar App Android (.APK)
             </a>
             <a href="#video" class="btn-secondary outline"><span class="play-icon">▶</span> Ver Demonstração</a>
