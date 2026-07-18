@@ -100,6 +100,7 @@
                     <th>No Horário</th>
                     <th>Esquecidos</th>
                     <th>Atrasados</th>
+                    <th>Adiantados</th>
                     <th>Taxa de Adesão</th>
                 </tr>
             </thead>
@@ -108,7 +109,8 @@
                     const onTime = parseInt(med.on_time_count);
                     const late = parseInt(med.late_count);
                     const warning = parseInt(med.warning_count);
-                    const total = onTime + late + warning;
+                    const early = parseInt(med.early_count || 0);
+                    const total = onTime + late + warning + early;
                     const rate = total > 0 ? Math.round((onTime / total) * 100) : 0;
                     const adherenceClass = rate >= 80 ? 'adherence-good' : (total > 0 ? 'adherence-bad' : '');
                     const timeStr = med.scheduled_time ? med.scheduled_time.substring(0, 5) : '-';
@@ -121,6 +123,7 @@
                     <td><%= onTime %></td>
                     <td><%= late %></td>
                     <td><%= warning %></td>
+                    <td><%= early %></td>
                     <td class="<%= adherenceClass %>">
                         <%= total > 0 ? rate + '%' : 'N/A' %>
                     </td>

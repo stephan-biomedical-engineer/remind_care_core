@@ -56,6 +56,7 @@ app.get('/doc', authenticate, async (req, res) => {
     const medicinesResult = await pool.query(`
       SELECT m.id, m.name, m.dosage, m.compartment, m.scheduled_time, m.week_days, m.created_at,
              (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'onTime') as on_time_count,
+             (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'early') as early_count,
              (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation IN ('late', 'missed')) as late_count,
              (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'warning') as warning_count
       FROM medicines m 
@@ -123,6 +124,7 @@ app.get('/stats', authenticate, async (req, res) => {
     const medicinesResult = await pool.query(`
       SELECT m.id, m.name, m.dosage, m.compartment, m.scheduled_time, m.week_days, m.created_at,
              (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'onTime') as on_time_count,
+             (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'early') as early_count,
              (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation IN ('late', 'missed')) as late_count,
              (SELECT COUNT(*) FROM medicine_logs l WHERE l.medicine_id = m.id AND l.situation = 'warning') as warning_count
       FROM medicines m 
