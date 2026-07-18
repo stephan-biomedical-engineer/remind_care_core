@@ -33,7 +33,7 @@ onMounted(() => {
       <div class="container nav-content">
         <div class="logo">RemindCare</div>
         <div class="logo">
-          <img src="/remindcare_logo.svg" alt="RemindCare Logo" style="height: 36px; object-fit: contain;" />
+          <img src="/remindcare_logo.svg?v=2" alt="RemindCare Logo" style="height: 36px; object-fit: contain;" />
         </div>
         
         <div class="nav-links">
@@ -145,7 +145,7 @@ onMounted(() => {
       <div class="container footer-content">
         <div class="footer-brand">
           <div class="logo">
-            <img src="/remindcare_logo.svg" alt="RemindCare Logo" style="height: 48px; object-fit: contain;" />
+            <img src="/remindcare_logo.svg?v=2" alt="RemindCare Logo" style="height: 48px; object-fit: contain;" />
           </div>
           <p>O ecossistema definitivo para a gestão médica inteligente.</p>
         </div>
