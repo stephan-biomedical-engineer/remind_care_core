@@ -31,13 +31,18 @@ onMounted(() => {
     <!-- Navbar -->
     <nav class="navbar">
       <div class="container nav-content">
+        <div class="logo">RemindCare</div>
         <div class="logo">
           <img src="/remindcare_logo.svg" alt="RemindCare Logo" style="height: 36px; object-fit: contain;" />
         </div>
+        
         <div class="nav-links">
           <a href="#solucao">Visão Geral</a>
           <a href="#hardware">A Caixa Inteligente</a>
           <a href="#app">O Aplicativo</a>
+        </div>
+
+        <div class="nav-action">
           <a href="remindcare-release.apk?v=2" download class="btn-login">Baixar App (.APK) <span class="arrow">↓</span></a>
         </div>
       </div>
@@ -297,11 +302,26 @@ a {
 }
 
 .logo {
+  flex: 1;
   font-size: 1.5rem;
   font-weight: 800;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.nav-links {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.nav-action {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .logo span {
@@ -315,11 +335,7 @@ a {
   border-radius: 6px;
 }
 
-.nav-links {
-  display: flex;
-  gap: 2.5rem;
-  align-items: center;
-}
+
 
 .nav-links a:not(.btn-login) {
   font-size: 0.95rem;
