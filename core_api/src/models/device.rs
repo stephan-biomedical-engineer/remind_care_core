@@ -15,6 +15,27 @@ pub struct Device {
     pub created_at: DateTime<Utc>,
 }
 
+#[derive(Debug, Serialize)]
+pub struct PublicDevice {
+    pub id: String,
+    pub firmware_version: Option<String>,
+    pub last_heartbeat_at: Option<DateTime<Utc>>,
+    pub is_active: bool,
+    pub created_at: DateTime<Utc>,
+}
+
+impl From<Device> for PublicDevice {
+    fn from(device: Device) -> Self {
+        Self {
+            id: device.id,
+            firmware_version: device.firmware_version,
+            last_heartbeat_at: device.last_heartbeat_at,
+            is_active: device.is_active,
+            created_at: device.created_at,
+        }
+    }
+}
+
 #[derive(Debug, sqlx::FromRow, Serialize)]
 pub struct DeviceEvent {
     pub id: i32,

@@ -167,4 +167,20 @@ impl DeviceRepository {
 
         Ok(row.and_then(|r| r.user_id))
     }
+
+    /// Buscar o dispositivo atual vinculado a um usuário
+    pub async fn get_device_by_user(pool: &PgPool, user_id: uuid::Uuid) -> Result<Option<crate::models::device::Device>, sqlx::Error> {
+        sqlx::query_as!(
+            crate::models::device::Device,
+            r#"
+            SELECT id, user_id, api_key_hash, firmware_version, last_heartbeat_at, is_active, created_at
+            FROM devices
+            WHERE user_id = $1
+            LIMIT 1
+            "#,
+            user_id
+        )
+        .fetch_optional(pool)
+        .await
+    }
 }

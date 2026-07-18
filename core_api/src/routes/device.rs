@@ -98,3 +98,16 @@ pub async fn bind_device(
 
     Ok(StatusCode::NO_CONTENT)
 }
+
+/// GET /api/v1/devices/me
+/// Retorna o dispositivo pareado do usuário (app mobile)
+pub async fn get_my_device(
+    auth_user: AuthUser,
+    State(state): State<AppState>,
+) -> Result<Json<PublicDevice>, ApiError> {
+    let device = device_service::get_user_device(&state.pool, auth_user.user_id)
+        .await
+        .map_err(|err| service_error(err, "Device not found"))?;
+
+    Ok(Json(device.into()))
+}

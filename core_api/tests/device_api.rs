@@ -51,6 +51,7 @@ async fn setup() -> (Router, PgPool)
     {
         pool: pool.clone(),
         config,
+        fcm_manager: None,
     };
 
     let app = build_app(state);
@@ -279,6 +280,41 @@ async fn bind_device_to_user_and_get_schedule()
     assert_eq!(status, StatusCode::OK);
     assert_eq!(body["device_id"], device_id);
     assert_eq!(body["schedule"].as_array().unwrap().len(), 0);
+}
+
+#[tokio::test]
+#[serial]
+async fn get_my_device_returns_paired_device() 
+{
+    let (app, pool) = setup().await;
+    let device_id = "PI-002-ME";
+    let api_key = "secret_key_456_ME";
+    seed_device(&pool, device_id, api_key).await;
+
+    // 1. App mobile pareia a caixa
+    let (_user_id, jwt) = register_and_login(app.clone(), "patient_me@test.com").await;
+
+    request(
+        app.clone(),
+        Method::POST,
+        "/api/v1/devices/bind",
+        Some(json!({
+            "device_id": device_id
+        })),
+        Some(&jwt),
+    ).await;
+
+    // 2. Fetch my device
+    let (status, body) = request(
+        app,
+        Method::GET,
+        "/api/v1/devices/me",
+        None,
+        Some(&jwt),
+    ).await;
+
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body["id"], device_id);
 }
 
 #[tokio::test]

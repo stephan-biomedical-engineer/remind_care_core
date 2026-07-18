@@ -151,3 +151,10 @@ pub async fn bind_device(pool: &PgPool, user_id: uuid::Uuid, req: &BindDeviceReq
 
     Ok(())
 }
+
+pub async fn get_user_device(pool: &PgPool, user_id: uuid::Uuid) -> Result<Device, ServiceError> {
+    DeviceRepository::get_device_by_user(pool, user_id)
+        .await
+        .map_err(ServiceError::Database)?
+        .ok_or(ServiceError::NotFound)
+}

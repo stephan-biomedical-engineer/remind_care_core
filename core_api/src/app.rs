@@ -88,6 +88,7 @@ pub fn build_app(state: AppState) -> Router
         .route("/{id}", get(crate::routes::medicine::get_medicine).put(crate::routes::medicine::update_medicine).delete(crate::routes::medicine::delete_medicine));
 
     let device_routes = Router::new()
+        .route("/me", get(crate::routes::device::get_my_device))
         .route("/schedule", get(crate::routes::device::get_schedule))
         .route("/events", post(crate::routes::device::report_event))
         .route("/heartbeat", post(crate::routes::device::heartbeat))

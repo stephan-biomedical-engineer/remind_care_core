@@ -50,6 +50,7 @@ async fn setup() -> (Router, PgPool)
     {
         pool: pool.clone(),
         config,
+        fcm_manager: None,
     };
 
     let app = build_app(state);
