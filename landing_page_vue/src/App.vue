@@ -1,5 +1,7 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+
+const showVideo = ref(false)
 
 onMounted(() => {
   const observer = new IntersectionObserver((entries) => {
@@ -43,7 +45,7 @@ onMounted(() => {
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero">
+    <header id="solucao" class="hero">
       <div class="container hero-container">
         <div class="hero-text fade-up">
           <div class="badge">Lançamento Exclusivo</div>
@@ -54,7 +56,7 @@ onMounted(() => {
             <a href="remindcare-release.apk?v=2" download class="btn-primary glow-effect">
               Baixar App Android (.APK)
             </a>
-            <a href="#video" class="btn-secondary outline"><span class="play-icon">▶</span> Ver Demonstração</a>
+            <a href="#" @click.prevent="showVideo = true" class="btn-secondary outline"><span class="play-icon">▶</span> Ver Demonstração</a>
           </div>
           
           <div class="stats">
@@ -95,11 +97,29 @@ onMounted(() => {
             <div class="feature-tag right">Sensores Magnéticos de Abertura</div>
           </div>
         </div>
+
+        <div class="hardware-details fade-up" style="margin-top: 4rem;">
+          <h3 style="text-align: center; margin-bottom: 2rem; font-size: 2rem;">Como Funciona? (Manual Rápido)</h3>
+          <div class="hardware-grid">
+            <div class="hardware-card">
+              <h4>1. Sincronização Automática</h4>
+              <p>Ao ser ligada na tomada, a caixa se conecta à rede Wi-Fi e baixa toda a agenda médica cadastrada no aplicativo, salvando-a no seu cérebro interno.</p>
+            </div>
+            <div class="hardware-card">
+              <h4>2. Alertas Visuais</h4>
+              <p>No horário exato de cada remédio, o LED correspondente à gaveta do medicamento pisca, orientando exatamente o que deve ser tomado.</p>
+            </div>
+            <div class="hardware-card">
+              <h4>3. Resiliência Offline</h4>
+              <p>Se a internet cair, a caixa usa seu relógio interno. Ela continua funcionando e armazena os eventos localmente para enviá-los à nuvem depois.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Lifestyle Section -->
-    <section id="lifestyle" class="features-section">
+    <!-- App Section -->
+    <section id="app" class="features-section">
       <div class="container lifestyle-container">
         <div class="lifestyle-visual fade-up">
            <img src="/lifestyle.png" alt="Idosa usando o RemindCare" class="lifestyle-img" />
@@ -128,6 +148,23 @@ onMounted(() => {
         </div>
       </div>
     </footer>
+    <!-- Video Modal -->
+    <div class="video-modal" :class="{ 'is-active': showVideo }" @click="showVideo = false">
+      <div class="modal-content" @click.stop>
+        <button class="close-btn" @click="showVideo = false">&times;</button>
+        <div class="video-container" v-if="showVideo">
+          <iframe 
+            width="100%" 
+            height="100%" 
+            src="https://www.youtube.com/embed/8ZuCT4PmurY?autoplay=1" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -159,6 +196,10 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 h1, h2, h3, h4, .logo {
@@ -591,6 +632,110 @@ a {
 .fade-up.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Hardware Grid */
+.hardware-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.hardware-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  padding: 2rem;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s;
+}
+
+.hardware-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.hardware-card h4 {
+  color: var(--accent-blue);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.hardware-card p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* Video Modal */
+.video-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.video-modal.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 1000px;
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: scale(0.95);
+  transition: transform 0.3s;
+}
+
+.video-modal.is-active .modal-content {
+  transform: scale(1);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 10;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.close-btn:hover {
+  color: var(--accent-blue);
+}
+
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /* Responsive */
