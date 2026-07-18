@@ -77,7 +77,7 @@ onMounted(() => {
         
         <div class="hero-visual fade-up">
           <div class="mockup-container floating">
-            <img src="/app.png" alt="Aplicativo RemindCare" class="mockup-img" />
+            <img src="/remindcare_app.png" alt="Aplicativo RemindCare" class="mockup-img" />
             <div class="glass-badge floating-reverse">
               <span>🔒 Criptografia End-to-End</span>
             </div>
