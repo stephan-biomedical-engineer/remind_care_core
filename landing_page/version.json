@@ -1,6 +1,6 @@
 {
-  "version": "1.0.3",
-  "build_number": 3,
+  "version": "1.0.4",
+  "build_number": 4,
   "url": "https://remindcare.com.br/remindcare-release.apk",
-  "release_notes": "Sistema OTA deploy"
+  "release_notes": "QR Code scanner"
 }
