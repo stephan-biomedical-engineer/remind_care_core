@@ -1,6 +1,6 @@
 {
-  "version": "1.0.5",
-  "build_number": 5,
+  "version": "1.0.6",
+  "build_number": 6,
   "url": "https://remindcare.com.br/remindcare-release.apk",
-  "release_notes": "Alarmes sonoros com vibração para medicamentos, leitor de QR Code para pareamento rápido da caixinha, sessão contínua e organização inteligente das gavetas por dia da semana (Segunda = Compartimento 1)"
+  "release_notes": "Atualização Automática do Dashboard via FCM Push"
 }
