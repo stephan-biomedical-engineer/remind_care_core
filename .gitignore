@@ -35,3 +35,4 @@ dist-ssr
 *.sw?
 landing_page_old/
 *.apk
+publish_apk.sh

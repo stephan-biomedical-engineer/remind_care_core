@@ -3,6 +3,7 @@ use serde_json::{json, Value};
 use tracing::{error, warn};
 
 use crate::services::users_service::ServiceError;
+use crate::services::firmware_service::FirmwareError;
 
 pub type ApiError = (StatusCode, Json<Value>);
 
@@ -90,5 +91,20 @@ pub fn validation_error(message: &str) -> ApiError
             )
         ),
     )
+}
+
+pub fn firmware_error(error: FirmwareError) -> ApiError
+{
+    match error
+    {
+        FirmwareError::Database(err) =>
+        {
+            error!(error = ?err, "Database error (firmware)");
+            internal_error("Failed to process firmware release")
+        }
+        FirmwareError::NotFound => not_found("No firmware release available"),
+        FirmwareError::Conflict(message) => conflict(&message),
+        FirmwareError::FileMissing(message) => validation_error(&message),
+    }
 }
 

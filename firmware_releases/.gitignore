@@ -1,0 +1,5 @@
+# Diretório de binários de firmware da caixa IoT (OTA).
+# Montado como volume :ro no container da core_api (/app/firmware_releases).
+# Os binários são enviados via scp pelo publish_firmware.sh e NÃO são versionados.
+*
+!.gitignore

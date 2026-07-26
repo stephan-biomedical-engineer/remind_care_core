@@ -1,15 +1,16 @@
 use axum::{
     extract::State,
     http::{HeaderMap, StatusCode},
-    response::IntoResponse,
     Json,
 };
 use rand::Rng;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use sha2::{Digest, Sha256};
-use sqlx::PgPool;
+use validator::Validate;
 
 use crate::app::AppState;
+use crate::models::firmware::{FirmwareManifest, PublishFirmwareRequest};
+use crate::services::firmware_service::{self, FirmwareError};
 
 const DEVICE_ID_PREFIX: &str = "RC";
 const DEVICE_ID_LENGTH: usize = 6;
@@ -86,6 +87,60 @@ pub async fn provision_device(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(ErrorResponse {
                     error: "Failed to provision device in database".to_string(),
+                }),
+            ))
+        }
+    }
+}
+
+/// POST /api/v1/admin/firmware
+/// O Arquiteto registra um novo release de firmware (metadados).
+/// O binário já deve ter sido enviado para o diretório de firmware da VPS (FIRMWARE_DIR).
+pub async fn publish_firmware(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(payload): Json<PublishFirmwareRequest>,
+) -> Result<(StatusCode, Json<FirmwareManifest>), (StatusCode, Json<ErrorResponse>)> {
+    let admin_key = headers.get("X-Admin-Secret")
+        .and_then(|value| value.to_str().ok())
+        .unwrap_or("");
+
+    if admin_key != state.config.admin_secret_key {
+        return Err((
+            StatusCode::UNAUTHORIZED,
+            Json(ErrorResponse {
+                error: "Unauthorized: Invalid admin secret key".to_string(),
+            }),
+        ));
+    }
+
+    payload.validate().map_err(|_| {
+        (
+            StatusCode::BAD_REQUEST,
+            Json(ErrorResponse {
+                error: "Invalid firmware payload".to_string(),
+            }),
+        )
+    })?;
+
+    match firmware_service::publish(&state.pool, &state.config.firmware_dir, &payload).await {
+        Ok(release) => Ok((StatusCode::CREATED, Json(release.into()))),
+        Err(FirmwareError::Conflict(message)) => {
+            Err((StatusCode::CONFLICT, Json(ErrorResponse { error: message })))
+        }
+        Err(FirmwareError::FileMissing(message)) => {
+            Err((StatusCode::BAD_REQUEST, Json(ErrorResponse { error: message })))
+        }
+        Err(e) => {
+            let err = match e {
+                FirmwareError::Database(db) => format!("{:?}", db),
+                _ => "unexpected error".to_string(),
+            };
+            tracing::error!("Failed to publish firmware release: {}", err);
+            Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: "Failed to publish firmware release".to_string(),
                 }),
             ))
         }

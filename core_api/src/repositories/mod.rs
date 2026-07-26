@@ -2,3 +2,4 @@ pub mod users_repository;
 pub mod refresh_tokens_repository;
 pub mod medicine_repository;
 pub mod device_repository;
+pub mod firmware_repository;

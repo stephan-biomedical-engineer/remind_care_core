@@ -1,9 +1,16 @@
-use axum::{extract::State, http::StatusCode, Json};
+use axum::{
+    body::Body,
+    extract::State,
+    http::{header, StatusCode},
+    response::{IntoResponse, Response},
+    Json,
+};
 use validator::Validate;
 
 use crate::models::device::*;
-use crate::responses::api_response::{service_error, validation_error, ApiError};
-use crate::services::device_service;
+use crate::models::firmware::FirmwareManifest;
+use crate::responses::api_response::{firmware_error, internal_error, service_error, validation_error, ApiError};
+use crate::services::{device_service, firmware_service};
 use crate::auth::device_extractor::AuthDevice;
 use crate::auth::extractor::AuthUser;
 use crate::app::AppState;
@@ -97,6 +104,50 @@ pub async fn bind_device(
         .map_err(|err| service_error(err, "Failed to bind device. Device not found, already bound, or deactivated."))?;
 
     Ok(StatusCode::NO_CONTENT)
+}
+
+/// GET /api/v1/devices/firmware
+/// A caixa consulta o manifesto do firmware mais recente disponível (metadados).
+pub async fn get_firmware(
+    _auth_device: AuthDevice,
+    State(state): State<AppState>,
+) -> Result<Json<FirmwareManifest>, ApiError> {
+    let release = firmware_service::get_latest(&state.pool)
+        .await
+        .map_err(firmware_error)?;
+
+    Ok(Json(release.into()))
+}
+
+/// GET /api/v1/devices/firmware/download
+/// A caixa baixa (streaming) o binário do firmware mais recente a partir do volume da VPS.
+pub async fn get_firmware_download(
+    _auth_device: AuthDevice,
+    State(state): State<AppState>,
+) -> Result<Response, ApiError> {
+    let release = firmware_service::get_latest(&state.pool)
+        .await
+        .map_err(firmware_error)?;
+
+    let path = std::path::Path::new(&state.config.firmware_dir).join(&release.filename);
+
+    let file = tokio::fs::File::open(&path).await.map_err(|err| {
+        tracing::error!(error = ?err, path = ?path, "Failed to open firmware binary");
+        internal_error("Firmware binary unavailable")
+    })?;
+
+    let stream = tokio_util::io::ReaderStream::new(file);
+    let body = Body::from_stream(stream);
+
+    let headers = [
+        (header::CONTENT_TYPE, "application/octet-stream".to_string()),
+        (
+            header::CONTENT_DISPOSITION,
+            format!("attachment; filename=\"{}\"", release.filename),
+        ),
+    ];
+
+    Ok((headers, body).into_response())
 }
 
 /// GET /api/v1/devices/me

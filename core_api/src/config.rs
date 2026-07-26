@@ -6,6 +6,7 @@ pub struct Config
     pub admin_secret_key: String,
     pub rust_log: String,
     pub app_env: String,
+    pub firmware_dir: String,
 }
 
 impl Config
@@ -28,6 +29,9 @@ impl Config
 
             app_env: std::env::var("APP_ENV")
                 .unwrap_or_else(|_| "development".to_string()),
+
+            firmware_dir: std::env::var("FIRMWARE_DIR")
+                .unwrap_or_else(|_| "/app/firmware_releases".to_string()),
         }
     }
 

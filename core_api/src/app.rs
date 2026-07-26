@@ -93,10 +93,13 @@ pub fn build_app(state: AppState) -> Router
         .route("/events", post(crate::routes::device::report_event))
         .route("/heartbeat", post(crate::routes::device::heartbeat))
         .route("/logs", post(crate::routes::device::report_log))
+        .route("/firmware", get(crate::routes::device::get_firmware))
+        .route("/firmware/download", get(crate::routes::device::get_firmware_download))
         .route("/bind", post(crate::routes::device::bind_device));
 
     let admin_routes = Router::new()
-        .route("/provision", post(crate::routes::admin::provision_device));
+        .route("/provision", post(crate::routes::admin::provision_device))
+        .route("/firmware", post(crate::routes::admin::publish_firmware));
 
     Router::new()
         .route("/health", get(health))
