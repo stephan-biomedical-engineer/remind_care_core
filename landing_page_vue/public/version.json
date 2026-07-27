@@ -1,6 +1,6 @@
 {
-  "version": "1.0.6",
-  "build_number": 6,
+  "version": "1.0.7",
+  "build_number": 7,
   "url": "https://remindcare.com.br/remindcare-release.apk",
-  "release_notes": "Atualização Automática do Dashboard via FCM Push"
+  "release_notes": "Redução de tempo de checagem de conexão"
 }
