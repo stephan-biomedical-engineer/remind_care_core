@@ -162,7 +162,7 @@ onMounted(() => {
           <iframe 
             width="100%" 
             height="100%" 
-            src="https://youtu.be/fJRV5_p9IYU?is=pSfz5ZOmPTL_b3JK?autoplay=1" 
+            src="https://www.youtube.com/embed/fJRV5_p9IYU?autoplay=1" 
             title="YouTube video player" 
             frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
