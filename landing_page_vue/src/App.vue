@@ -43,7 +43,8 @@ onMounted(() => {
         </div>
 
         <div class="nav-action">
-          <a href="remindcare-release.apk?v=2" download class="btn-login">Baixar App (.APK) <span class="arrow">↓</span></a>
+          <a href="remindcare-release.apk?v=2" download class="btn-login">Android (.APK) <span class="arrow">↓</span></a>
+          <a href="remindcare-release.ipa?v=2" download class="btn-login">iOS (.IPA) <span class="arrow">↓</span></a>
         </div>
       </div>
     </nav>
@@ -58,7 +59,10 @@ onMounted(() => {
           
           <div class="cta-group">
             <a href="remindcare-release.apk?v=2" download class="btn-primary glow-effect">
-              Baixar App Android (.APK)
+              Android (.APK) ↓
+            </a>
+            <a href="remindcare-release.ipa?v=2" download class="btn-primary btn-ios glow-effect">
+              iOS (.IPA) ↓
             </a>
             <a href="#" @click.prevent="showVideo = true" class="btn-secondary outline"><span class="play-icon">▶</span> Ver Demonstração</a>
           </div>
@@ -154,6 +158,7 @@ onMounted(() => {
         </div>
       </div>
     </footer>
+    
     <!-- Video Modal -->
     <div class="video-modal" :class="{ 'is-active': showVideo }" @click="showVideo = false">
       <div class="modal-content" @click.stop>
@@ -175,7 +180,6 @@ onMounted(() => {
 </template>
 
 <style>
-/* CSS Imports from the old style with adjustments for Vue */
 :root {
   --bg-primary: #0a0a0c;
   --bg-secondary: #121217;
@@ -322,6 +326,7 @@ a {
   flex: 1;
   display: flex;
   justify-content: flex-end;
+  gap: 0.6rem;
 }
 
 .logo span {
@@ -334,8 +339,6 @@ a {
   background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
   border-radius: 6px;
 }
-
-
 
 .nav-links a:not(.btn-login) {
   font-size: 0.95rem;
@@ -352,14 +355,15 @@ a {
 .btn-login {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.6rem 1.2rem;
+  padding: 0.6rem 1rem;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  white-space: nowrap;
 }
 
 .btn-login:hover {
@@ -370,10 +374,10 @@ a {
 .btn-primary {
   background: linear-gradient(135deg, #10b981, #059669);
   color: white;
-  padding: 1rem 2rem;
+  padding: 1rem 1.8rem;
   border-radius: 12px;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1rem;
   display: inline-block;
   transition: all 0.3s ease;
   border: none;
@@ -385,14 +389,24 @@ a {
   box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
 }
 
+/* Estilo adicional para diferenciar o botão de iOS */
+.btn-ios {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.btn-ios:hover {
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
+}
+
 .btn-secondary {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
-  padding: 1rem 2rem;
+  padding: 1rem 1.8rem;
   border-radius: 12px;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1rem;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -455,6 +469,7 @@ a {
 
 .cta-group {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 3rem;
 }
