@@ -2,6 +2,49 @@
 import { onMounted, ref } from 'vue'
 
 const showVideo = ref(false)
+const activeTab = ref('wifi')
+const previewImage = ref(null)
+
+const manualSteps = {
+  wifi: {
+    title: '1. Conexão Wi-Fi do Hardware',
+    subtitle: 'Conecte a caixa inteligente à sua rede doméstica em poucos passos',
+    steps: [
+      { id: 1, title: 'Rede RemindCare', desc: 'Ao ligar a caixa, selecione a rede Wi-Fi RemindCare-Caixa no celular.', img: '/tela1.jpg' },
+      { id: 2, title: 'Portal Automático', desc: 'O portal captive de configuração abrirá automaticamente na tela.', img: '/tela2.jpg' },
+      { id: 3, title: 'Credenciais de Casa', desc: 'Selecione sua rede Wi-Fi doméstica e digite a senha correspondente.', img: '/tela3.jpg' },
+      { id: 4, title: 'Conexão Nuvem', desc: 'A caixinha se conecta à internet e confirma a prontidão de uso.', img: '/tela4.jpg' }
+    ]
+  },
+  app: {
+    title: '2. Cadastro e Pareamento',
+    subtitle: 'Crie sua conta de usuário e vincule o aplicativo à caixinha inteligente',
+    steps: [
+      { id: 5, title: 'Criar Conta', desc: 'Cadastre seus dados de paciente ou cuidador no aplicativo.', img: '/tela5.jpg' },
+      { id: 6, title: 'Login Seguro', desc: 'Acesse o aplicativo com suas credenciais de segurança.', img: '/tela6.jpg' },
+      { id: 7, title: 'Buscar Dispositivo', desc: 'Toque no botão de parear caixinha no aplicativo para localizar o hardware.', img: '/tela7.jpg' },
+      { id: 8, title: 'Status Online (Verde)', desc: 'O indicador com a bolinha verde confirma que a caixinha está vinculada.', img: '/tela8.jpg' }
+    ]
+  },
+  remedios: {
+    title: '3. Medicamentos e Compartimentos',
+    subtitle: 'Cadastre a receita médica, defina os alertas e associe às gavetas com LED',
+    steps: [
+      { id: 9, title: 'Novo Remédio', desc: 'Toque no botão de adicionar medicamento para iniciar o cadastro.', img: '/tela9.jpg' },
+      { id: 10, title: 'Horários e Dosagem', desc: 'Configure o nome, intervalo de horas e escolha o compartimento da caixa.', img: '/tela10.jpg' },
+      { id: 11, title: 'Grade Semanal', desc: 'Acompanhe a agenda semanal completa com os horários de cada dose.', img: '/tela11.jpg' },
+      { id: 12, title: 'Gavetas & LEDs', desc: 'Veja a representação gráfica das gavetas e seus respectivos LEDs.', img: '/tela12.jpg' }
+    ]
+  },
+  relatorios: {
+    title: '4. Monitoramento e Relatório PDF',
+    subtitle: 'Acompanhe o tratamento em tempo real e exporte relatórios para o seu médico',
+    steps: [
+      { id: 13, title: 'Doses Pendentes & Stats', desc: 'Monitore os remédios a serem tomados e o índice diário de adesão.', img: '/tela13.jpg' },
+      { id: 14, title: 'Relatório em PDF', desc: 'Exporte relatórios em PDF com o histórico detalhado para apresentar na consulta.', img: '/tela14.jpg' }
+    ]
+  }
+}
 
 onMounted(() => {
   const observer = new IntersectionObserver((entries) => {
@@ -106,20 +149,68 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="hardware-details fade-up" style="margin-top: 4rem;">
-          <h3 style="text-align: center; margin-bottom: 2rem; font-size: 2rem;">Como Funciona? (Manual Rápido)</h3>
-          <div class="hardware-grid">
-            <div class="hardware-card">
-              <h4>1. Sincronização Automática</h4>
-              <p>Ao ser ligada na tomada, a caixa se conecta à rede Wi-Fi e baixa toda a agenda médica cadastrada no aplicativo, salvando-a no seu cérebro interno.</p>
-            </div>
-            <div class="hardware-card">
-              <h4>2. Alertas Visuais</h4>
-              <p>No horário exato de cada remédio, o LED correspondente à gaveta do medicamento pisca, orientando exatamente o que deve ser tomado.</p>
-            </div>
-            <div class="hardware-card">
-              <h4>3. Resiliência Offline</h4>
-              <p>Se a internet cair, a caixa usa seu relógio interno. Ela continua funcionando e armazena os eventos localmente para enviá-los à nuvem depois.</p>
+        <!-- Interactive Visual Manual Section -->
+        <div class="manual-section fade-up">
+          <div class="manual-header text-center">
+            <h3>Como Funciona? (Guia Visual Passo a Passo)</h3>
+            <p>Acompanhe o fluxo completo desde a primeira conexão Wi-Fi até a emissão de relatórios médicos</p>
+          </div>
+
+          <!-- Navigation Tabs -->
+          <div class="manual-tabs">
+            <button 
+              class="manual-tab-btn" 
+              :class="{ active: activeTab === 'wifi' }"
+              @click="activeTab = 'wifi'"
+            >
+              <span class="tab-num">1</span> Wi-Fi da Caixinha
+            </button>
+            <button 
+              class="manual-tab-btn" 
+              :class="{ active: activeTab === 'app' }"
+              @click="activeTab = 'app'"
+            >
+              <span class="tab-num">2</span> Conta & Pareamento
+            </button>
+            <button 
+              class="manual-tab-btn" 
+              :class="{ active: activeTab === 'remedios' }"
+              @click="activeTab = 'remedios'"
+            >
+              <span class="tab-num">3</span> Remédios & Gavetas
+            </button>
+            <button 
+              class="manual-tab-btn" 
+              :class="{ active: activeTab === 'relatorios' }"
+              @click="activeTab = 'relatorios'"
+            >
+              <span class="tab-num">4</span> Alertas & PDF
+            </button>
+          </div>
+
+          <!-- Tab Content Header -->
+          <div class="tab-intro">
+            <h4>{{ manualSteps[activeTab].title }}</h4>
+            <p>{{ manualSteps[activeTab].subtitle }}</p>
+          </div>
+
+          <!-- Steps Grid -->
+          <div class="steps-grid">
+            <div 
+              v-for="step in manualSteps[activeTab].steps" 
+              :key="step.id" 
+              class="step-card"
+              @click="previewImage = step"
+            >
+              <div class="step-badge">Passo {{ step.id }}</div>
+              <div class="step-image-wrapper">
+                <img :src="step.img" :alt="step.title" class="step-img" />
+                <div class="image-zoom-hint">🔍 Ampliar</div>
+              </div>
+              <div class="step-content">
+                <h5>{{ step.title }}</h5>
+                <p>{{ step.desc }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -173,6 +264,20 @@ onMounted(() => {
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen>
           </iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Zoom Modal -->
+    <div class="image-modal" :class="{ 'is-active': previewImage }" @click="previewImage = null">
+      <div class="image-modal-content" @click.stop v-if="previewImage">
+        <button class="close-btn" @click="previewImage = null">&times;</button>
+        <div class="modal-image-wrapper">
+          <img :src="previewImage.img" :alt="previewImage.title" class="modal-img" />
+        </div>
+        <div class="modal-image-caption">
+          <h4>Passo {{ previewImage.id }}: {{ previewImage.title }}</h4>
+          <p>{{ previewImage.desc }}</p>
         </div>
       </div>
     </div>
@@ -802,5 +907,272 @@ a {
   .nav-links {
     display: none;
   }
+}
+
+/* Interactive Visual Manual Styles */
+.manual-section {
+  margin-top: 4rem;
+  padding: 3rem 2rem;
+  background: rgba(18, 18, 23, 0.6);
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--glass-shadow);
+}
+
+.manual-header h3 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #f4f4f5, #a1a1aa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.manual-header p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  margin-bottom: 2.5rem;
+}
+
+.manual-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.manual-tab-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  padding: 0.8rem 1.4rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.manual-tab-btn .tab-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.manual-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.manual-tab-btn.active {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+  border-color: var(--accent-purple);
+  color: var(--text-primary);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+}
+
+.manual-tab-btn.active .tab-num {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  color: #fff;
+}
+
+.tab-intro {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--glass-border);
+}
+
+.tab-intro h4 {
+  font-size: 1.4rem;
+  color: var(--accent-cyan);
+  margin-bottom: 0.3rem;
+}
+
+.tab-intro p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.step-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.step-card:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.step-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+  background: rgba(10, 10, 12, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--accent-blue);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+}
+
+.step-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background: #000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.step-card:hover .step-img {
+  transform: scale(1.05);
+}
+
+.image-zoom-hint {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.step-card:hover .image-zoom-hint {
+  opacity: 1;
+}
+
+.step-content {
+  padding: 1.2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.step-content h5 {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.step-content p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Image Zoom Modal */
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(12px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.image-modal.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.image-modal-content {
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-image-wrapper {
+  width: 100%;
+  max-height: 60vh;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-img {
+  max-width: 100%;
+  max-height: 55vh;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.modal-image-caption {
+  padding: 1.5rem;
+  text-align: center;
+  background: rgba(10, 10, 12, 0.95);
+}
+
+.modal-image-caption h4 {
+  color: var(--accent-cyan);
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.modal-image-caption p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
 }
 </style>
